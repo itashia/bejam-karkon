@@ -1,3 +1,4 @@
+
 <title>{{ $title ?? $settings->site_title ?? $settings->site_name }}</title>
 <meta name="description" content="{{ $description ?? $settings->site_description }}">
 <meta name="keywords" content="{{ $keywords ?? $settings->site_keywords }}">
@@ -128,4 +129,6 @@ src="https://www.facebook.com/tr?id={{ $settings->facebook_pixel }}&ev=PageView&
 {!! $js['code'] !!}
 </script>
 @endif
-@endforeach
+@endforeach<div>
+    <!-- You must be the change you wish to see in the world. - Mahatma Gandhi -->
+</div>

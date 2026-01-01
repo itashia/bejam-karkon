@@ -1,59 +1,202 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🚀 Biabejam - Job Replacement Platform
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+> **"When you can't go to work, who will work in your place?"**  
+> Biabejam is Iran's first job replacement platform. Sick day? Vacation? Emergency? Find a qualified professional to temporarily replace you at work.
 
-## About Laravel
+**Built with ❤️ by:** [@itashia](https://github.com/itashia)  
+**Support the developer:**  
+[☕ Buy me a coffee](https://www.coffeebede.com/itashia) • [💝 Donate](https://donito.me/itashia)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Quick Start
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### **Option 1: One-Command Setup** (Recommended)
+```bash
+make start
+```
+This single command will:
+- Clean any existing setup
+- Build all Docker containers
+- Start the entire application stack
+- Set proper permissions
 
-## Learning Laravel
+### **Option 2: Manual Setup**
+```bash
+# Start all services
+make up
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+# If app doesn't start automatically:
+docker exec -it biabejam_app bash
+php artisan serve --port=8000 --host=0.0.0.0
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 🌐 Access Services
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+| Service | URL | Credentials |
+|---------|-----|-------------|
+| **App** | http://localhost:90 | - |
+| **pgAdmin** | http://localhost:8080 | email: `itarrshia@biabejam.com`<br>pass: `admin` |
+| **MailHog** | http://localhost:8025 | - |
+| **MinIO** | http://localhost:9001 | user: `minio`<br>pass: `minio123` |
+| **Grafana** | http://localhost:3000 | user: `admin`<br>pass: `admin` |
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## ⚡ Development Commands
 
-## Contributing
+### **Docker Management**
+```bash
+make up        # Start all services
+make down      # Stop all services
+make restart   # Restart services
+make logs      # View app logs
+make app       # SSH into app container
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### **Artisan & Composer**
+```bash
+make artisan migrate          # Run migrations
+make artisan db:seed          # Seed database
+make artisan tinker           # Open Tinker
+make composer require package # Install package
+```
 
-## Code of Conduct
+### **Database**
+```bash
+make fresh    # Fresh migration + seeding
+make test     # Run tests
+make clean    # Full clean + rebuild
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 🏗️ Project Structure
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```
+biabejam/
+├── app/
+│   ├── Enums/          # PHP Enums (Gender, Status, etc.)
+│   ├── Models/         # Eloquent Models
+│   └── Livewire/       # Livewire components
+├── database/
+│   ├── migrations/     # Database migrations
+│   └── seeders/       # Data seeders
+├── resources/
+│   ├── views/         # Blade templates
+│   └── css/js/        # Frontend assets
+└── docker/            # Docker configuration
+```
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 🛠️ Common Issues & Fixes
+
+### **Permission Issues**
+```bash
+# Fix file permissions
+sudo chown -R $(whoami):$(whoami) .
+chmod -R 775 storage bootstrap/cache
+```
+
+### **Container Won't Start**
+```bash
+# Rebuild from scratch
+make clean
+make build
+make up
+```
+
+### **Port Already in Use**
+```bash
+# Kill processes on port 90
+sudo lsof -ti:90 | xargs kill -9
+```
+
+---
+
+## 🤝 Contributing
+
+### **Commit Rules**
+```bash
+# ALWAYS create a new branch
+git checkout -b feature/your-feature-name
+
+# Add and commit
+git add .
+git commit -m "feat: Add amazing feature
+
+- Added new functionality
+- Fixed some bugs
+- Improved performance
+
+- درست شده با:@your-github-username"
+
+# Push and create PR
+git push origin feature/your-feature-name
+```
+
+### **Branch Naming Convention**
+- `feature/` - New features
+- `fix/` - Bug fixes
+- `docs/` - Documentation
+- `refactor/` - Code refactoring
+
+**Example:** `feature/add-payment-gateway`
+
+---
+
+## 📦 Tech Stack
+
+- **Backend:** Laravel 11, PHP 8.3
+- **Frontend:** Livewire, Alpine.js, Tailwind CSS
+- **Database:** PostgreSQL 16
+- **Cache:** Redis
+- **Queue:** Laravel Horizon
+- **Admin:** Filament PHP
+- **Container:** Docker Compose
+- **Storage:** MinIO (S3 compatible)
+
+---
+
+## 🚨 Emergency Commands
+
+```bash
+# Nuke everything and start fresh
+make clean && make start
+
+# View real-time logs
+docker compose logs -f --tail=100 app
+
+# Check container health
+docker compose ps
+```
+
+---
+
+## 📞 Need Help?
+
+1. **Check logs:** `make logs`
+2. **Restart services:** `make restart`
+3. **Ask in Discord/Telegram group**
+4. **Create GitHub issue**
+
+---
+
+## 🎯 Quick Checklist
+
+- [ ] `make start` - Everything running?
+- [ ] http://localhost:90 - App accessible?
+- [ ] Database seeded?
+- [ ] Admin panel working? (http://localhost:90/admin)
+- [ ] Email catching? (http://localhost:8025)
+
+---
+
+**Happy Coding! 🚀**  
+*Remember: Always work on a new branch and include your @username at the end of commits!*
+
+**Built with passion by [@itashia](https://github.com/itashia)**  
+[☕ Support](https://www.coffeebede.com/itashia) • [🐛 Report Issues](https://github.com/itashia/biabejam/issues)

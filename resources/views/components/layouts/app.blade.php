@@ -7,10 +7,10 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         
         @php
-            $settings = \App\Models\Setting::getSettings();
+         $settings = \App\Models\Setting::getSettings();
+
             $pageTitle = isset($title) ? $title . ' - ' . $settings->site_name : $settings->site_name;
         @endphp
-        
         <x-seo-meta
             :title="$pageTitle"
             :description="$description ?? $settings->site_description"
@@ -24,6 +24,7 @@
         @if(isset($styles))
             {{ $styles }}
         @endif
+        @livewireStyles
     </head>
     <body class="font-main antialiased bg-gray-50">
 
@@ -40,5 +41,7 @@
         @if(isset($scripts))
             {{ $scripts }}
         @endif
+
+        @livewireScripts
     </body>
 </html>
