@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use Filament\Support\Facades\FilamentView;
 use Illuminate\Support\ServiceProvider;
+use Vite;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        FilamentView::registerRenderHook(
+            'panels::body.start',
+            fn (): string => '<link rel="stylesheet" href="' . Vite::asset('resources/css/app.css') . '">',
+        );
     }
 }
