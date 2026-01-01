@@ -1,0 +1,7 @@
+#!/bin/sh
+
+echo "🚀 Running checks before push..."
+
+docker compose exec -T --user root app ./vendor/bin/pint || exit 1
+
+echo "✅ Push allowed"
