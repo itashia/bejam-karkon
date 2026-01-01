@@ -1,0 +1,134 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: development
+    container_name: bejam_karkon_app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - "90:8080"
+    environment:
+      COMPOSER_ALLOW_SUPERUSER: 1
+      COMPOSER_HOME: /tmp/composer
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mailhog:
+        condition: service_started
+      pusher:
+        condition: service_started
+    networks:
+      - bejam_karkon_net
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: bejam_karkon_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: bejam_karkon_db
+    ports:
+      - "5832:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U admin" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bejam_karkon_net
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: bejam_karkon_pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: itarrshia@bejam_karkon.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - bejam_karkon_net
+
+  redis:
+    image: redis:7-alpine
+    container_name: bejam_karkon_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bejam_karkon_net
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: bejam_karkon_mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - bejam_karkon
+
+  grafana:
+    image: grafana/grafana
+    container_name: bejam_karkon_grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    networks:
+      - bejam_karkon_net
+  minio:
+    image: minio/minio:latest
+    container_name: bejam_karkon_minio
+    restart: unless-stopped
+    ports:
+      - "9000:9000"     # S3 API
+      - "9001:9001"     # MinIO Console
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - bejam_karkon_net
+
+
+  pusher:
+    image: oliverlundquist/pusher-local-dev-server:latest
+    container_name: bejam_karkon_pusher
+    ports:
+      - "6001:6001"
+    restart: unless-stopped
+    networks:
+      - bejam_karkon_net
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
+
+networks:
+  bejam_karkon_net:
+    driver: bridge
