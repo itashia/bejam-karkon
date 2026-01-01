@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: docker/Dockerfile
       target: development
-    container_name: bejam_karkon_app
+    container_name: biabejam_app
     restart: unless-stopped
     working_dir: /var/www/html
     volumes:
@@ -24,16 +24,16 @@ services:
       pusher:
         condition: service_started
     networks:
-      - bejam_karkon_net
+      - biabejam_net
 
   postgres:
     image: postgres:16-alpine
-    container_name: bejam_karkon_postgres
+    container_name: biabejam_postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
-      POSTGRES_DB: bejam_karkon_db
+      POSTGRES_DB: biabejam_db
     ports:
       - "5832:5432"
     volumes:
@@ -44,14 +44,14 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - bejam_karkon_net
+      - biabejam_net
 
   pgadmin:
     image: dpage/pgadmin4
-    container_name: bejam_karkon_pgadmin
+    container_name: biabejam_pgadmin
     restart: unless-stopped
     environment:
-      PGADMIN_DEFAULT_EMAIL: itarrshia@bejam_karkon.com
+      PGADMIN_DEFAULT_EMAIL: itarrshia@biabejam.com
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
       - "8080:80"
@@ -59,11 +59,11 @@ services:
       postgres:
         condition: service_healthy
     networks:
-      - bejam_karkon_net
+      - biabejam_net
 
   redis:
     image: redis:7-alpine
-    container_name: bejam_karkon_redis
+    container_name: biabejam_redis
     restart: unless-stopped
     ports:
       - "6379:6379"
@@ -75,21 +75,21 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - bejam_karkon_net
+      - biabejam_net
 
   mailhog:
     image: mailhog/mailhog
-    container_name: bejam_karkon_mailhog
+    container_name: biabejam_mailhog
     restart: unless-stopped
     ports:
       - "1025:1025"
       - "8025:8025"
     networks:
-      - bejam_karkon
+      - biabejam_net
 
   grafana:
     image: grafana/grafana
-    container_name: bejam_karkon_grafana
+    container_name: biabejam_grafana
     environment:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: admin
@@ -97,10 +97,10 @@ services:
       - "3000:3000"
     restart: unless-stopped
     networks:
-      - bejam_karkon_net
+      - biabejam_net
   minio:
     image: minio/minio:latest
-    container_name: bejam_karkon_minio
+    container_name: biabejam_minio
     restart: unless-stopped
     ports:
       - "9000:9000"     # S3 API
@@ -112,17 +112,17 @@ services:
       - minio_data:/data
     command: server /data --console-address ":9001"
     networks:
-      - bejam_karkon_net
+      - biabejam_net
 
 
   pusher:
     image: oliverlundquist/pusher-local-dev-server:latest
-    container_name: bejam_karkon_pusher
+    container_name: biabejam_pusher
     ports:
       - "6001:6001"
     restart: unless-stopped
     networks:
-      - bejam_karkon_net
+      - biabejam_net
 
 volumes:
   postgres_data:
@@ -130,5 +130,5 @@ volumes:
   minio_data:
 
 networks:
-  bejam_karkon_net:
+  biabejam_net:
     driver: bridge
