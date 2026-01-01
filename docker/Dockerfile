@@ -21,12 +21,22 @@ RUN chmod -R 755 . && chmod +x /etc/services.d/*
 # =================================================================
 FROM serversideup/php:8.4-fpm-nginx AS frontend-assets
 
+# Node.js 24.12.0
+USER root
+RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
+    && apt-get install -y nodejs \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 COPY --from=base /var/www/html/resources ./resources
+COPY --from=base /var/www/html/public ./public
 COPY --from=base /var/www/html/vendor ./vendor
-
 COPY --chown=www-data:www-data . .
+
+RUN npm install \
+    && npm run build
 
 # =================================================================
 # Stage 3: Production image
@@ -49,11 +59,6 @@ COPY --from=base /etc/services.d /etc/services.d
 RUN composer dump-autoload --optimize \
     && chmod -R u+rwX,go-w storage bootstrap/cache
 
-RUN echo "alias ll='ls -al'" >> /etc/bash.bashrc && \
-    echo "alias a='php artisan'" >> /etc/bash.bashrc && \
-    echo "alias logs='tail -n 100 -f storage/logs/laravel.log'" >> /etc/bash.bashrc && \
-    echo "alias amfs='a migrate:fresh --seed'" >> /etc/bash.bashrc
-
 USER www-data
 
 # =================================================================
@@ -69,14 +74,10 @@ RUN install-php-extensions intl exif ldap \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN echo "alias ll='ls -al'" >> /etc/bash.bashrc && \
-    echo "alias a='php artisan'" >> /etc/bash.bashrc && \
-    echo "alias c='composer'" >> /etc/bash.bashrc && \
-    echo "alias logs='tail -n 100 -f storage/logs/laravel.log'" >> /etc/bash.bashrc && \
-    echo "alias amfs='a migrate:fresh --seed'" >> /etc/bash.bashrc && \
-    echo "alias aoc='a optimize:clear'" >> /etc/bash.bashrc && \
-    echo "alias am:fi-r='a make:filament-resource'" >> /etc/bash.bashrc && \
-    echo "alias am:fi-rm='a make:filament-relation-manager'" >> /etc/bash.bashrc && \
-    echo "alias am:fi-w='a make:filament-widget'" >> /etc/bash.bashrc
+# Node.js 20.x
+RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
+    && apt-get install -y nodejs \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 USER www-data
